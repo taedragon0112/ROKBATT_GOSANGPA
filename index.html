@@ -289,11 +289,6 @@ select option{background:#111418;}
 #faq-fab:hover .utm-fab-label{max-width:160px;opacity:1;margin-left:8px;}
 .faq-fab-icon{font-size:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;width:20px;height:100%;}
 
-
-/* 식단표 FAB (갤러리 전용) */
-#meal-fab{position:fixed;bottom:52px;left:24px;z-index:800;display:none;align-items:center;justify-content:flex-start;cursor:pointer;background:#fff;border-radius:23px;height:46px;padding:0 13px;box-shadow:0 4px 20px rgba(0,0,0,.45);transition:box-shadow .25s,max-width .38s cubic-bezier(.4,0,.2,1);overflow:hidden;white-space:nowrap;max-width:46px;}
-#meal-fab:hover{max-width:200px;box-shadow:0 4px 26px rgba(255,200,0,.28);}
-#meal-fab:hover .utm-fab-label{max-width:160px;opacity:1;margin-left:8px;}
 /* FAQ Chat Modal */
 #faq-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:8500;align-items:flex-end;justify-content:flex-start;padding:80px 24px 88px;}
 #faq-modal-overlay.active{display:flex;}
@@ -894,86 +889,30 @@ select option{background:#111418;}
       </div>
     </div>
 
-    <!-- ── 우측 컬럼: ROKBATT 폴리마켓 ── -->
-    <div style="overflow-y:auto;padding:12px;background:#0a0d10;" id="bunkerpool-panel">
-
-      <!-- 헤더 -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:1px;">📊 ROKBATT POLYMARKET</div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <span id="bp-my-pts" style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--gold);">💰 —pt</span>
-          <button onclick="bpShowLogin()" id="bp-login-btn" style="font-family:'Noto Sans KR',sans-serif;font-size:11px;padding:4px 10px;background:rgba(179,136,255,.15);border:1px solid var(--accent2);border-radius:4px;color:var(--accent2);cursor:pointer;">참가</button>
-          <button onclick="bpAdminLogin()" style="font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--dim);cursor:pointer;">ADMIN</button>
-        </div>
+    <!-- ── 우측 컬럼: 식단/근무표 ── -->
+    <div style="overflow-y:auto;padding:12px;">
+      <!-- 식단표 이미지 -->
+      <div style="margin-bottom:16px;">
+        <div style="font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--accent);letter-spacing:2px;margin-bottom:8px;">// 주간 식단표</div>
+        <img src="https://i.imgur.com/anCGhfu.jpeg"
+          style="width:100%;border-radius:4px;border:1px solid var(--border);cursor:zoom-in;transition:opacity .15s;"
+          onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'"
+          onclick="openMealZoom(this.src)"
+          alt="주간 식단표">
       </div>
-
-      <!-- 참가자 바 -->
-      <div id="bp-user-bar" style="display:none;margin-bottom:12px;padding:8px 12px;background:rgba(179,136,255,.08);border:1px solid rgba(179,136,255,.2);border-radius:6px;font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--accent2);">
-        👤 <span id="bp-username-display">—</span>
-        <button onclick="bpLogout()" style="float:right;background:transparent;border:none;color:var(--dim);font-size:11px;cursor:pointer;">로그아웃</button>
+      <!-- 근무표 (공사중) -->
+      <div class="construction" style="min-height:30vh;">
+        <div class="icon">📋</div>
+        <div style="font-family:'Noto Sans KR',sans-serif;font-size:14px;color:var(--warn);letter-spacing:3px;margin-bottom:10px;">UNDER CONSTRUCTION</div>
+        <div style="font-size:13px;color:var(--dim);line-height:2;">근무표<br>구상 중...</div>
       </div>
-
-      <!-- 베팅 탭 -->
-      <div style="display:flex;gap:0;margin-bottom:10px;border-bottom:1px solid var(--border);">
-        <button id="bp-tab-open" onclick="bpSetTab('open')" style="flex:1;padding:6px;background:transparent;border:none;border-bottom:2px solid var(--accent2);color:var(--accent2);font-family:'Noto Sans KR',sans-serif;font-size:11px;cursor:pointer;">📊 열린 베팅</button>
-        <button id="bp-tab-closed" onclick="bpSetTab('closed')" style="flex:1;padding:6px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--dim);font-family:'Noto Sans KR',sans-serif;font-size:11px;cursor:pointer;">📁 끝난 베팅</button>
-      </div>
-      <div id="bp-list" style="display:flex;flex-direction:column;gap:10px;">
-        <div style="font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--dim);text-align:center;padding:20px;">로딩 중...</div>
-      </div>
-
-      <!-- 관리자 패널 -->
-      <div id="bp-admin-panel" style="display:none;margin-top:16px;padding:12px;background:rgba(255,100,50,.06);border:1px solid rgba(255,100,50,.2);border-radius:6px;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--warn);letter-spacing:2px;margin-bottom:10px;">⚙️ ADMIN — 베팅 개설</div>
-        <input id="bp-new-title" type="text" placeholder="베팅 제목" style="width:100%;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:7px 10px;margin-bottom:8px;box-sizing:border-box;">
-        <input id="bp-new-opt1" type="text" placeholder="선택지 1" style="width:100%;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:7px 10px;margin-bottom:6px;box-sizing:border-box;">
-        <input id="bp-new-opt2" type="text" placeholder="선택지 2" style="width:100%;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:12px;padding:7px 10px;margin-bottom:8px;box-sizing:border-box;">
-        <div style="display:flex;gap:6px;margin-bottom:8px;">
-          <div style="flex:1;">
-            <div style="font-family:'Noto Sans KR',sans-serif;font-size:10px;color:var(--dim);margin-bottom:3px;">마감 날짜·시간 (LT)</div>
-            <input id="bp-new-deadline" type="datetime-local" style="width:100%;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:11px;padding:6px 8px;box-sizing:border-box;">
-          </div>
-          <div style="flex:1;">
-            <div style="font-family:'Noto Sans KR',sans-serif;font-size:10px;color:var(--dim);margin-bottom:3px;">자동정산</div>
-            <select id="bp-new-auto" style="width:100%;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:11px;padding:6px;box-sizing:border-box;">
-              <option value="manual">수동정산</option>
-              <option value="kospi">KOSPI 연동</option>
-              <option value="nasdaq">NASDAQ 연동</option>
-              <option value="newimpact">낙탄 연동</option>
-              <option value="firing">발사 연동</option>
-            </select>
-          </div>
-        </div>
-        <button onclick="bpAdminCreate()" style="width:100%;padding:8px;background:rgba(255,100,50,.2);border:1px solid rgba(255,100,50,.4);border-radius:4px;color:#ff6432;font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;">+ 베팅 개설</button>
-        <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px;">
-          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:1px;margin-bottom:6px;">🔑 비밀번호 초기화</div>
-          <div id="bp-pw-reset-list" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
-        </div>
-        <div style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px;">
-          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:1px;margin-bottom:6px;">💰 점수 초기화</div>
-          <div id="bp-pts-reset-list" style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;"></div>
-          <button onclick="bpResetAllPts()" style="width:100%;padding:5px;background:rgba(255,50,50,.1);border:1px solid rgba(255,50,50,.3);border-radius:3px;color:#ff3355;font-family:'Noto Sans KR',sans-serif;font-size:10px;cursor:pointer;">⚠️ 전체 점수 초기화 (500pt)</button>
-        </div>
-      </div>
-
-      <!-- 랭킹 -->
-      <div style="margin-top:16px;padding:12px;background:var(--panel);border:1px solid var(--border);border-radius:6px;">
-        <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:2px;margin-bottom:8px;">🏆 LEADERBOARD</div>
-        <div id="bp-ranking" style="font-family:'Noto Sans KR',sans-serif;font-size:12px;color:var(--dim);">—</div>
-      </div>
-
     </div>
   </div>
 </div>
 
-<!-- 식단표 줌 모달 -->
-<div id="meal-zoom-overlay" onclick="closeMealZoom()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;display:none;align-items:center;justify-content:center;cursor:zoom-out;">
-  <img id="meal-zoom-img" src="" style="max-width:90vw;max-height:90vh;border-radius:6px;box-shadow:0 8px 40px rgba(0,0,0,.8);">
-</div>
-
 <!-- 업데이트 로그 버튼 (고정) -->
 <button class="version-btn" onclick="openPage('page-version')">
-  📋 업데이트 로그 <span class="version-badge">v3.2.1</span>
+  📋 업데이트 로그 <span class="version-badge">v3.3.0</span>
 </button>
 
 <!-- ═══ PAGE 1: SITREP + LOG ═══ -->
@@ -1448,12 +1387,6 @@ select option{background:#111418;}
   <span class="utm-fab-label">자주 묻는 질문</span>
 </div>
 
-
-<!-- 식단표 FAB (갤러리 전용) -->
-<div id="meal-fab" onclick="openMealZoom('https://i.imgur.com/anCGhfu.jpeg')">
-  <span class="faq-fab-icon">🍽️</span>
-  <span class="utm-fab-label">주간 식단표</span>
-</div>
 <!-- 홈 전용 근무 체크리스트 FAB -->
 
 <!-- ═══ UTM 모달 ═══ -->
@@ -1945,40 +1878,15 @@ select option{background:#111418;}
       <button onclick="fbSyncAll()" style="background:transparent;border:1px solid var(--accent2);border-radius:4px;color:var(--accent2);font-family:'Noto Sans KR',sans-serif;font-size:10px;padding:4px 10px;cursor:pointer;white-space:nowrap;" id="fb-sync-btn">☁️ 서버 동기화</button>
     </div>
     <div class="ver-item latest">
-      <div class="ver-item-header" onclick="toggleVer('ver-321')">
-        <span class="ver-version" style="color:var(--accent);">v3.2.1</span>
-        <span class="ver-date">2026.03.30</span>
-        <span class="ver-tag latest-tag">✦ LATEST · PATCH</span>
-        <span class="ver-chevron" id="chev-321">▼</span>
+      <div class="ver-item-header" onclick="toggleVer('ver-330')">
+        <span class="ver-version" style="color:var(--accent);">v3.3.0</span>
+        <span class="ver-date">2026.03.27</span>
+        <span class="ver-tag latest-tag">✦ LATEST · MINOR</span>
+        <span class="ver-chevron" id="chev-330">▼</span>
       </div>
-      <div class="ver-body" id="ver-321" style="display:block;">
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">버그수정</span>폴리마켓 — 다음날 기본 베팅 자동 생성 수정 (관리자 미로그인 시에도 생성)</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">버그수정</span>폴리마켓 — 탭 재진입 시 이전 날짜 베팅 사라지던 문제 수정</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">개선</span>폴리마켓 — 오늘 베팅 / 지난 베팅 구분 표시 (지난 베팅은 접이식)</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">기타</span>일요일 당직은 인류 최대의 고통... 그래도 방공호는 안 간다에 베팅합니다 😤</span></div>
-      </div>
-    </div>
-    <div class="ver-item">
-      <div class="ver-item-header" onclick="toggleVer('ver-320')">
-        <span class="ver-version" style="color:var(--accent);">v3.2.0</span>
-        <span class="ver-date">2026.03.26</span>
-        <span class="ver-tag">MINOR</span>
-        <span class="ver-chevron" id="chev-320">▶</span>
-      </div>
-      <div class="ver-body" id="ver-320" style="display:none;">
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>ROKBATT POLYMARKET — 풀배당 예측 베팅 시스템 추가 (락뱃 갤러리 내 우측 패널)</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>폴리마켓 — 고정 베팅 3종 자동 생성 (방공호 대피/KOSPI 내일 상승/NASDAQ 내일 상승)</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>폴리마켓 — 관리자 커스텀 베팅 개설 (제목·선택지·마감시간·자동정산 연동 설정)</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>폴리마켓 — 마감 전 동일 선택지 추가 베팅 가능, 실시간 확률 바 표시</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>폴리마켓 — 참가자 비밀번호 설정 (당직사령·당직부관 제외 11명), 최초 로그인 시 등록</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>폴리마켓 — 관리자 PW 초기화, 점수 개인/전체 초기화 (진행 중 베팅 자동 철회)</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>폴리마켓 — 관리자 베팅 삭제 기능 (포인트 자동 환불)</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>폴리마켓 — 매일 자정 +100pt 지급, 첫 참가 시 500pt 지급, 실시간 리더보드</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>식단표 FAB — 락뱃 갤러리 전용 하단 버튼으로 이동, 클릭 시 전체화면 줌</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">버그수정</span>마켓 티커 함수 유실 복구 — 이전 파일 손상으로 mtFetch/mtRender 등 전체 소실된 것 복원</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">버그수정</span>관리자 리더보드 노출 수정 — BP_MEMBERS 외 계정 랭킹 제외</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">개선</span>증시 베팅 내일 날짜 기준으로 변경, 마감 22:00 LT (한국 장 마감 전)</span></div>
-        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">개선</span>당직이 힘드냐? 300pt 베팅해서 날리면 더 힘들다 🎰</span></div>
+      <div class="ver-body" id="ver-330" style="display:block;">
+        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">개선</span>레바논 서머타임(EEST) UTC+3 전체 적용 — 홈 시계, 상황보고, 커뮤니티, 대시보드 시간 일괄 반영</span></div>
+        <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">변경</span>ROKBATT POLYMARKET 제거 — 흥미가 떨어져서 삭제</span></div>
       </div>
     </div>
     <div class="ver-item">
@@ -1986,7 +1894,7 @@ select option{background:#111418;}
         <span class="ver-version" style="color:var(--accent);">v3.1.0</span>
         <span class="ver-date">2026.03.26</span>
         <span class="ver-tag">MINOR</span>
-        <span class="ver-chevron" id="chev-310">▼</span>
+        <span class="ver-chevron" id="chev-310">▶</span>
       </div>
       <div class="ver-body" id="ver-310" style="display:none;">
         <div class="ver-change"><span class="ver-change-dot">▸</span><span class="ver-change-text"><span class="ver-change-cat">신기능</span>사건 대시보드 — FIRING/NEWIMPACT/INTERCEPT 로그 기반 지도 마커, 사건 추이 라인차트, 시간대 히트맵, 방향별 레이더차트 추가</span></div>
@@ -2441,7 +2349,6 @@ const FB_PATH = {
   commPosts: 'gosangpa/commPosts',
   dispatches:'gosangpa/dispatches',
   hwItems:   'gosangpa/hwItems',
-  bunkerpool:'gosangpa/bunkerpool',
 };
 window._fbPath = FB_PATH;
 
@@ -2989,7 +2896,7 @@ let hwMonthYear   = 0;
 let hwMonthMonth  = 0;
 let hwMonthMode   = false;
 
-function ltNow(){ return new Date(new Date().getTime()+2*60*60*1000); }
+function ltNow(){ return new Date(new Date().getTime()+3*60*60*1000); }
 function hwDateKey(d){ return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`; }
 
 function hwLoad(){
@@ -3199,7 +3106,7 @@ function updateClock(){const n=ltNow(),h=String(n.getUTCHours()).padStart(2,'0')
 setInterval(updateClock,1000);updateClock();
 
 // ─── NAV ───────────────────────────────────────────
-function openPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);const box=document.getElementById('home-clock-box');if(box)box.style.display=(id==='home')?'block':'none';const vb=document.querySelector('.version-btn');if(vb)vb.style.display=(id==='home')?'flex':'none';const mtw=document.getElementById('market-ticker-wrap');if(mtw)mtw.style.display=(id==='home')?'block':'none';const fab=document.getElementById('utm-fab');if(fab)fab.style.display=(id==='page-sitrep')?'flex':'none';const ffab=document.getElementById('faq-fab');if(ffab)ffab.style.display=(id==='page-sitrep'||id==='home')?'flex':'none';const tfab=document.getElementById('translate-fab');if(tfab)tfab.style.display=(id==='page-sitrep'||id==='home')?'flex':'none';const mfab=document.getElementById('meal-fab');if(mfab)mfab.style.display=(id==='page-gundori')?'flex':'none';if(id==='page-dispatch')dpInit();if(id==='page-checklist'){hwInit();}if(id==='page-dashboard'){dashInit();}if(id==='page-gundori'){bpInit();}if(id==='page-sitrep'){if(!srCalInited){srInitCal();srLastArchiveDate=srTodayKey();setInterval(srCheckMidnight,60000);srCalInited=true;}else{srRenderCal();srRenderArchiveSummary();}}}
+function openPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);const box=document.getElementById('home-clock-box');if(box)box.style.display=(id==='home')?'block':'none';const vb=document.querySelector('.version-btn');if(vb)vb.style.display=(id==='home')?'flex':'none';const mtw=document.getElementById('market-ticker-wrap');if(mtw)mtw.style.display=(id==='home')?'block':'none';const fab=document.getElementById('utm-fab');if(fab)fab.style.display=(id==='page-sitrep')?'flex':'none';const ffab=document.getElementById('faq-fab');if(ffab)ffab.style.display=(id==='page-sitrep'||id==='home')?'flex':'none';const tfab=document.getElementById('translate-fab');if(tfab)tfab.style.display=(id==='page-sitrep'||id==='home')?'flex':'none';if(id==='page-dispatch')dpInit();if(id==='page-checklist'){hwInit();}if(id==='page-dashboard'){dashInit();}if(id==='page-sitrep'){if(!srCalInited){srInitCal();srLastArchiveDate=srTodayKey();setInterval(srCheckMidnight,60000);srCalInited=true;}else{srRenderCal();srRenderArchiveSummary();}}}
 function openUtmModal(){document.getElementById('utm-modal-overlay').classList.add('active');document.getElementById('utm-modal-search').value='';filterUtmModal();}
 function closeUtmModal(e){if(!e||e.target===document.getElementById('utm-modal-overlay')||e.currentTarget===document.getElementById('utm-modal-close'))document.getElementById('utm-modal-overlay').classList.remove('active');}
 function filterUtmModal(){const q=document.getElementById('utm-modal-search').value.toLowerCase();document.querySelectorAll('#utm-modal-body .utm-table tbody tr').forEach(r=>{r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';});}
@@ -3207,13 +3114,13 @@ function openChecklistModal(){document.getElementById('checklist-modal-overlay')
 function closeChecklistModal(e){if(!e||e.target===document.getElementById('checklist-modal-overlay'))document.getElementById('checklist-modal-overlay').classList.remove('active');}
 function toggleCheck(id){const row=document.getElementById(id);const box=document.getElementById(id+'-box');if(!row||!box)return;const done=row.classList.toggle('done');box.textContent=done?'✓':'';}
 function resetChecklist(){['cl-1700','cl-1900','cl-2100a','cl-2100b','cl-task','cl-pmrt'].forEach(id=>{const row=document.getElementById(id);const box=document.getElementById(id+'-box');if(row)row.classList.remove('done');if(box)box.textContent='';});}
-function goHome(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('home').classList.add('active');window.scrollTo(0,0);const box=document.getElementById('home-clock-box');if(box)box.style.display='block';const vb=document.querySelector('.version-btn');if(vb)vb.style.display='flex';const mtw=document.getElementById('market-ticker-wrap');if(mtw)mtw.style.display='block';const fab=document.getElementById('utm-fab');if(fab)fab.style.display='none';const ffab=document.getElementById('faq-fab');if(ffab)ffab.style.display='flex';const tfab=document.getElementById('translate-fab');if(tfab)tfab.style.display='flex';const mfab=document.getElementById('meal-fab');if(mfab)mfab.style.display='none';}
+function goHome(){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('home').classList.add('active');window.scrollTo(0,0);const box=document.getElementById('home-clock-box');if(box)box.style.display='block';const vb=document.querySelector('.version-btn');if(vb)vb.style.display='flex';const mtw=document.getElementById('market-ticker-wrap');if(mtw)mtw.style.display='block';const fab=document.getElementById('utm-fab');if(fab)fab.style.display='none';const ffab=document.getElementById('faq-fab');if(ffab)ffab.style.display='flex';const tfab=document.getElementById('translate-fab');if(tfab)tfab.style.display='flex';}
 function sGoStep(n){document.querySelectorAll('#page-sitrep .step-wrap').forEach(el=>el.classList.remove('active'));document.getElementById('s-step-'+n).classList.add('active');}
 function sShowStep(id){document.querySelectorAll('#page-sitrep .step-wrap').forEach(el=>el.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
 // ─── RESET ─────────────────────────────────────────
 function fillCurrentTime(){
-  const _lt=new Date(new Date().getTime()+2*60*60*1000); // LT = UTC+2
+  const _lt=new Date(new Date().getTime()+3*60*60*1000); // LT = UTC+3 (서머타임)
   const el_yr=document.getElementById('t-year');   if(el_yr) el_yr.value=String(_lt.getUTCFullYear());
   const el_mo=document.getElementById('t-month');  if(el_mo) el_mo.value=String(_lt.getUTCMonth()+1).padStart(2,'0');
   const el_dy=document.getElementById('t-day');    if(el_dy) el_dy.value=String(_lt.getUTCDate()).padStart(2,'0');
@@ -3642,9 +3549,9 @@ let srLastArchiveDate='';
 let srCalInited=false;
 
 function srTodayKey(){
-  // LT(UTC+2) 기준 날짜
+  // LT(UTC+3) 기준 날짜
   const n=new Date();
-  const lt=new Date(n.getTime()+2*60*60*1000);
+  const lt=new Date(n.getTime()+3*60*60*1000);
   return `${lt.getUTCFullYear()}-${String(lt.getUTCMonth()+1).padStart(2,'0')}-${String(lt.getUTCDate()).padStart(2,'0')}`;
 }
 function srInitCal(){
@@ -3786,7 +3693,7 @@ function saveToLog(){
   const dy=String(document.getElementById('t-day').value||'1').padStart(2,'0');
   const entryDateKey=`${yr}-${mo}-${dy}`;
   const todayKey=srTodayKey();
-  const entry={id:Date.now(),date:entryDateKey+'T'+(timeHHMM?timeHHMM.substring(0,2)+':'+timeHHMM.substring(2,4)+':00':'00:00:00')+'+02:00',type:lastType,typeDisplay:SIT_NAMES[lastType]||lastType,timeStr,timeHHMM,saltr:lastSaltr,fir:lastFir,code:'',updates:[],meta:Object.assign({},lastMeta)};
+  const entry={id:Date.now(),date:entryDateKey+'T'+(timeHHMM?timeHHMM.substring(0,2)+':'+timeHHMM.substring(2,4)+':00':'00:00:00')+'+03:00',type:lastType,typeDisplay:SIT_NAMES[lastType]||lastType,timeStr,timeHHMM,saltr:lastSaltr,fir:lastFir,code:'',updates:[],meta:Object.assign({},lastMeta)};
   // Firebase 리스너가 덮어쓰지 않도록 잠시 무시
   _fbIgnoreLogs=true;
   setTimeout(()=>{ _fbIgnoreLogs=false; }, 4000);
@@ -3799,7 +3706,7 @@ function saveToLog(){
   }
   srRenderCal();srRenderArchiveSummary();
   lsSave('logs', logs); lsSave('srArchive', srArchive);
-  if(lastType==='NEWIMPACT'||lastType==='FIRING'){bpOnNewImpact();} const btn=document.getElementById('save-log-btn');btn.textContent='✅ 저장됨!';setTimeout(()=>btn.textContent='💾 로그 저장',2000);
+  const btn=document.getElementById('save-log-btn');btn.textContent='✅ 저장됨!';setTimeout(()=>btn.textContent='💾 로그 저장',2000);
 }
 
 function renderLogs(){
@@ -4196,8 +4103,8 @@ function generateUpdate(){
 function padZ(n){return String(n).padStart(2,'0');}
 function updateHomeClocks(){
   const now=new Date();
-  // 레바논 현지시간 (UTC+2)
-  const ltOffset=2*60;
+  // 레바논 현지시간 (UTC+3 서머타임)
+  const ltOffset=3*60; // UTC+3 서머타임
   const ltMs=now.getTime()+now.getTimezoneOffset()*60000+ltOffset*60000;
   const lt=new Date(ltMs);
   const ltStr=`${lt.getMonth()+1}월 ${lt.getDate()}일 ${padZ(lt.getHours())}:${padZ(lt.getMinutes())}:${padZ(lt.getSeconds())}`;
@@ -4446,31 +4353,31 @@ function openMealZoom(src){
 }
 
 // ─── 커뮤니티 ──────────────────────────────────────
-// ── LT(UTC+2) 시각 유틸 ──
+// ── LT(UTC+3) 시각 유틸 ──
 // 레바논 현지시간 기준 Date-like 객체 반환 (getUTC* 로 읽으면 LT값)
-function ltNow(){ return new Date(Date.now()+2*60*60*1000); }
+function ltNow(){ return new Date(Date.now()+3*60*60*1000); }
 function ltNowISO(){
-  // LT = UTC+2 고정 (레바논 표준시)
+  // LT = UTC+3 (서머타임) 고정 (레바논 표준시)
   const now = new Date();
   const ltMs = now.getTime() + (2 * 60 * 60 * 1000);
   const lt = new Date(ltMs);
-  // ISO 형식으로 반환 (Z 대신 +02:00)
+  // ISO 형식으로 반환 (Z 대신 +03:00)
   const y  = lt.getUTCFullYear();
   const mo = String(lt.getUTCMonth()+1).padStart(2,'0');
   const d  = String(lt.getUTCDate()).padStart(2,'0');
   const h  = String(lt.getUTCHours()).padStart(2,'0');
   const mi = String(lt.getUTCMinutes()).padStart(2,'0');
   const s  = String(lt.getUTCSeconds()).padStart(2,'0');
-  return `${y}-${mo}-${d}T${h}:${mi}:${s}+02:00`;
+  return `${y}-${mo}-${d}T${h}:${mi}:${s}+03:00`;
 }
 function formatLT(isoStr){
   // 저장된 날짜(ISO)를 LT 기준으로 표시
-  // +02:00 suffix가 있으면 그대로 슬라이스, 없으면(구버전 UTC) UTC+2 변환
+  // +03:00 suffix가 있으면 그대로 슬라이스, 없으면(구버전 UTC) UTC+3 변환
   if(!isoStr) return '';
   try{
     const d = new Date(isoStr);
-    const ltMs = d.getTime() + (isoStr.endsWith('Z') || (!isoStr.includes('+') && !isoStr.includes('-',10)) ? 2*3600*1000 : 0);
-    const lt = new Date(isoStr.includes('+02:00') ? d.getTime() : ltMs);
+    const ltMs = d.getTime() + (isoStr.endsWith('Z') || (!isoStr.includes('+') && !isoStr.includes('-',10)) ? 3*3600*1000 : 0);
+    const lt = new Date(isoStr.includes('+03:00') ? d.getTime() : ltMs);
     const mo = String(lt.getUTCMonth()+1).padStart(2,'0');
     const day= String(lt.getUTCDate()).padStart(2,'0');
     const h  = String(lt.getUTCHours()).padStart(2,'0');
@@ -4844,7 +4751,7 @@ const DP_TYPE_BADGE = {log:'log',op:'op',ca:'ca'};
 const DP_TYPE_LABEL = {log:'군수',op:'작전',ca:'민군'};
 
 function dpDateKey(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
-function dpTodayKey(){const lt=new Date(new Date().getTime()+2*60*60*1000);return dpDateKey(lt.getUTCFullYear(),lt.getUTCMonth(),lt.getUTCDate());}
+function dpTodayKey(){const lt=new Date(new Date().getTime()+3*60*60*1000);return dpDateKey(lt.getUTCFullYear(),lt.getUTCMonth(),lt.getUTCDate());}
 
 // ─── LEAFLET 다크 지도 ──────────────────────────────────
 let _dpMap = null;
@@ -5573,13 +5480,13 @@ function dashGetAllEntries(){
   const all=[];
   [...(logs||[])].forEach(e=>{
     if(!e.type&&e.meta?.type) e.type=e.meta.type;
-    if(!e.date) e.date=srTodayKey()+'T00:00:00+02:00';
+    if(!e.date) e.date=srTodayKey()+'T00:00:00+03:00';
     all.push(e);
   });
   Object.entries(srArchive||{}).forEach(([dateKey,arr])=>{
     (arr||[]).forEach(e=>{
       if(!e.type&&e.meta?.type) e.type=e.meta.type;
-      if(!e.date) e.date=dateKey+'T00:00:00+02:00';
+      if(!e.date) e.date=dateKey+'T00:00:00+03:00';
       all.push(e);
     });
   });
@@ -6115,537 +6022,9 @@ async function translateEngToKor(){
   }finally{btn.disabled=false;}
 }
 
-// ═══════════════════════════════════════════════════
-// 📊 ROKBATT POLYMARKET — 풀배당 예측 시장
-// ═══════════════════════════════════════════════════
-let BP_ADMIN_PW = null; // Firebase에서 로드
-const BP_MEMBERS = ['김태용','오성현','한경민','류호준','임태우','정경준','박재남','정유찬','김준희','김수현','서동현','당직사령','당직부관'];
-const BP_MEMBERS_WITH_PW = ['김태용','오성현','한경민','류호준','임태우','정경준','박재남','정유찬','김준희','김수현','서동현'];
-const BP_DAILY_PT = 100;
-const BP_FB = 'gosangpa/bunkerpool';
-
-let bpUser = null;
-let bpIsAdmin = false;
-let bpData = {};
-let bpListener = null;
-let bpDeadlineTimer = null;
-let bpTab = "open"; // 현재 탭: open / closed
-
-function bpInit(){
-  try{const s=localStorage.getItem('bp_session');if(s){const v=JSON.parse(s);bpUser=v.user;bpIsAdmin=v.admin||false;}}catch(e){}
-  bpUpdateUserBar();
-  if(window._fbDb){
-    if(!bpListener){
-      bpListener=window._fbDb.ref(BP_FB).on('value',snap=>{
-        const raw=snap.val()||{};
-        bpData=raw;
-        // Firebase 배열→객체 방어
-        if(bpData.bets&&Array.isArray(bpData.bets)) bpData.bets=Object.fromEntries(bpData.bets.filter(Boolean).map(b=>[b.id,b]));
-        if(!bpData.bets)bpData.bets={};
-        if(!bpData.users)bpData.users={};
-        bpDailyGrant();
-        bpEnsureDefaultBetsAuto();
-        if(bpIsAdmin) bpEnsureDefaultBets();
-        bpRender();
-      });
-    } else {
-      // 탭 재진입 시에도 오늘 베팅 체크
-      bpEnsureDefaultBetsAuto();
-      if(bpIsAdmin) bpEnsureDefaultBets();
-      bpRender();
-    }
-  } else { bpRender(); }
-  if(!bpDeadlineTimer) bpDeadlineTimer=setInterval(bpCheckDeadlines,60000);
-}
-
-function bpDailyGrant(){
-  if(!bpUser||!window._fbDb)return;
-  const todayKey=srTodayKey();
-  const granted=bpData.users?.[bpUser]?.granted||'';
-  if(granted===todayKey)return;
-  const cur=bpData.users?.[bpUser]?.pts??500;
-  window._fbDb.ref(`${BP_FB}/users/${bpUser}`).update({pts:cur+BP_DAILY_PT,granted:todayKey});
-}
-
-function bpEnsureDefaultBetsAuto(){
-  if(!window._fbDb)return;
-  const todayKey=srTodayKey();
-  const ltNow2=ltNow();
-  const tmr=new Date(ltNow2.getTime()+24*60*60*1000);
-  const tomorrowKey=tmr.getUTCFullYear()+'-'+String(tmr.getUTCMonth()+1).padStart(2,'0')+'-'+String(tmr.getUTCDate()).padStart(2,'0');
-  // bets가 배열이면 객체로 변환
-  let bets=bpData.bets||{};
-  if(Array.isArray(bets)) bets=Object.fromEntries(bets.filter(Boolean).map(b=>[b.id,b]));
-  const deadlineBunker=todayKey+'T22:00'; // 방공호도 22:00 마감으로 통일
-  const deadlineStock=todayKey+'T22:00';
-  const id1='bet_auto_'+todayKey+'_bunker';
-  const id2='bet_auto_'+todayKey+'_kospi';
-  const id3='bet_auto_'+todayKey+'_nasdaq';
-  const updates={};
-  // 각각 독립적으로 존재 여부 체크 (오늘 날짜 기준)
-  const hasBunker=Object.values(bets).some(b=>b.autoType==='newimpact'&&b.deadline&&b.deadline.startsWith(todayKey));
-  const hasKospi =Object.values(bets).some(b=>b.autoType==='kospi' &&b.deadline&&b.deadline.startsWith(todayKey));
-  const hasNasdaq=Object.values(bets).some(b=>b.autoType==='nasdaq'&&b.deadline&&b.deadline.startsWith(todayKey));
-  if(!hasBunker) updates[BP_FB+'/bets/'+id1]={id:id1,title:'['+tomorrowKey+'] 내일 방공호 대피 발생?',opts:['🏃 간다','😤 안간다'],deadline:deadlineBunker,autoType:'newimpact',status:'open',pool:{},settled:false,winner:null,createdAt:Date.now()};
-  if(!hasKospi)  updates[BP_FB+'/bets/'+id2]={id:id2,title:'['+tomorrowKey+'] KOSPI 내일 상승?',opts:['📈 상승','📉 하락'],deadline:deadlineStock,autoType:'kospi',status:'open',pool:{},settled:false,winner:null,createdAt:Date.now()-1};
-  if(!hasNasdaq) updates[BP_FB+'/bets/'+id3]={id:id3,title:'['+tomorrowKey+'] NASDAQ 내일 상승?',opts:['📈 상승','📉 하락'],deadline:deadlineStock,autoType:'nasdaq',status:'open',pool:{},settled:false,winner:null,createdAt:Date.now()-2};
-  if(Object.keys(updates).length>0) window._fbDb.ref().update(updates);
-}
-
-function bpEnsureDefaultBets(){
-  if(!window._fbDb||!bpIsAdmin)return;
-  const todayKey=srTodayKey();
-  const ltNow2=ltNow();
-  const tmr=new Date(ltNow2.getTime()+24*60*60*1000);
-  const yyyy=tmr.getUTCFullYear();
-  const mm=String(tmr.getUTCMonth()+1).padStart(2,'0');
-  const dd=String(tmr.getUTCDate()).padStart(2,'0');
-  const tomorrowKey=yyyy+'-'+mm+'-'+dd;
-  const bets=bpData.bets||{};
-  const deadlineBunker=todayKey+'T22:00';
-  const deadlineStock=todayKey+'T22:00';
-  if(!Object.values(bets).some(b=>b.autoType==='newimpact'&&b.deadline&&b.deadline.startsWith(todayKey)))
-    bpCreateBet({title:'['+tomorrowKey+'] 내일 방공호 대피 발생?',opts:['🏃 간다','😤 안간다'],deadline:deadlineBunker,autoType:'newimpact'});
-  if(!Object.values(bets).some(b=>b.autoType==='kospi'&&b.deadline&&b.deadline.startsWith(todayKey)))
-    bpCreateBet({title:'['+tomorrowKey+'] KOSPI 내일 상승?',opts:['📈 상승','📉 하락'],deadline:deadlineStock,autoType:'kospi'});
-  if(!Object.values(bets).some(b=>b.autoType==='nasdaq'&&b.deadline&&b.deadline.startsWith(todayKey)))
-    bpCreateBet({title:'['+tomorrowKey+'] NASDAQ 내일 상승?',opts:['📈 상승','📉 하락'],deadline:deadlineStock,autoType:'nasdaq'});
-}
-
-function bpCreateBet({title,opts,deadline,autoType}){
-  if(!window._fbDb)return;
-  const id='bet_'+Date.now();
-  const bet={id,title,opts,deadline:deadline||srTodayKey()+'T23:59',autoType:autoType||'manual',status:'open',pool:{_:0},settled:false,winner:null,createdAt:Date.now()};
-  window._fbDb.ref(`${BP_FB}/bets/${id}`).set(bet);
-}
-
-function bpCheckDeadlines(){
-  if(!window._fbDb||!bpData.bets)return;
-  const nowLT=ltNow();
-  Object.values(bpData.bets).forEach(bet=>{
-    if(bet.settled||bet.status!=='open')return;
-    if(!bet.deadline)return;
-    const dl=new Date(bet.deadline);
-    if(nowLT>=dl) window._fbDb.ref(`${BP_FB}/bets/${bet.id}/status`).set('expired');
-  });
-  bpRender();
-}
-
-function bpPlaceBet(betId,optIdx,amount){
-  if(!bpUser){showCustomModal({icon:'⚠️',title:'// 로그인 필요',msg:'먼저 참가자 선택을 해주세요.',okText:'확인'});return;}
-  if(!window._fbDb)return;
-  const bet=bpData.bets?.[betId];
-  if(!bet)return;
-  if(bet.status!=='open'){showCustomModal({icon:'⚠️',title:'// 마감됨',msg:'베팅이 마감되었습니다.',okText:'확인'});return;}
-  const nowLT=ltNow();
-  if(bet.deadline&&nowLT>=new Date(bet.deadline)){showCustomModal({icon:'⚠️',title:'// 마감됨',msg:'베팅 기한이 지났습니다.',okText:'확인'});return;}
-  const userPts=bpData.users?.[bpUser]?.pts||0;
-  if(amount<=0||amount>userPts){showCustomModal({icon:'⚠️',title:'// 포인트 부족',msg:'잔고: '+userPts+'pt',okText:'확인'});return;}
-  const pool=bet.pool||{};
-  const otherBet=Object.entries(pool).find(([i,v])=>Number(i)!==optIdx&&v.bets?.[bpUser]);
-  if(otherBet){showCustomModal({icon:'⚠️',title:'// 변경 불가',msg:'이미 다른 선택지에 베팅하셨습니다.',okText:'확인'});return;}
-  const updates={};
-  updates[`${BP_FB}/bets/${betId}/pool/${optIdx}/total`]=(pool[optIdx]?.total||0)+amount;
-  updates[`${BP_FB}/bets/${betId}/pool/${optIdx}/bets/${bpUser}`]=(pool[optIdx]?.bets?.[bpUser]||0)+amount;
-  updates[`${BP_FB}/users/${bpUser}/pts`]=userPts-amount;
-  window._fbDb.ref().update(updates);
-}
-
-function bpSettle(betId,winnerIdx){
-  if(!bpIsAdmin)return;
-  const bet=bpData.bets?.[betId];
-  if(!bet||bet.settled)return;
-  const pool=bet.pool||{};
-  const totalAll=Object.values(pool).reduce((s,o)=>s+(o.total||0),0);
-  const winPool=pool[winnerIdx]?.total||0;
-  const winBets=pool[winnerIdx]?.bets||{};
-  const updates={};
-  updates[`${BP_FB}/bets/${betId}/settled`]=true;
-  updates[`${BP_FB}/bets/${betId}/status`]='closed';
-  updates[`${BP_FB}/bets/${betId}/winner`]=winnerIdx;
-  if(winPool>0){
-    Object.entries(winBets).forEach(([user,amount])=>{
-      const payout=Math.floor(totalAll*(amount/winPool));
-      const curPts=bpData.users?.[user]?.pts||0;
-      updates[`${BP_FB}/users/${user}/pts`]=curPts+payout;
-    });
-  }
-  window._fbDb.ref().update(updates);
-  showCustomModal({icon:'✅',title:'// 정산 완료',msg:bet.opts[winnerIdx]+' 승리! 총 '+totalAll+'pt 배당',okText:'확인'});
-}
-
-function bpDeleteBet(betId){
-  if(!bpIsAdmin)return;
-  const bet=bpData.bets?.[betId];
-  if(!bet)return;
-  const pool=bet.pool||{};
-  // 베팅한 참가자 포인트 환불
-  const refunds={};
-  Object.entries(pool).filter(([k])=>k!=='_').map(([,v])=>v).forEach(optData=>{
-    Object.entries(optData.bets||{}).forEach(([user,amt])=>{
-      refunds[user]=(refunds[user]||0)+amt;
-    });
-  });
-  showCustomModal({
-    icon:'🗑',title:'// 베팅 삭제',
-    msg:'"'+bet.title+'" 베팅을 삭제합니다.'+(Object.keys(refunds).length>0?'<br><span style="font-size:11px;color:var(--gold);">베팅 참가자 포인트 자동 환불</span>':''),
-    okText:'삭제',showCancel:true,borderColor:'var(--dim)',okColor:'var(--dim)',
-    onOk:()=>{
-      if(!window._fbDb)return;
-      const updates={};
-      updates[BP_FB+'/bets/'+betId]=null;
-      Object.entries(refunds).forEach(([user,amt])=>{
-        const cur=bpData.users?.[user]?.pts||0;
-        updates[BP_FB+'/users/'+user+'/pts']=cur+amt;
-      });
-      window._fbDb.ref().update(updates);
-    }
-  });
-}
-
-function bpAutoSettle(){
-  if(!bpIsAdmin||!bpData.bets)return;
-  const todayKey=srTodayKey();
-  Object.values(bpData.bets).forEach(bet=>{
-    if(bet.settled||bet.status==='closed')return;
-    if(!bet.deadline||!bet.deadline.startsWith(todayKey))return;
-    if(bet.autoType==='kospi'){const d=_mtData['kospi'];if(d)bpSettle(bet.id,d.pct>=0?0:1);}
-    else if(bet.autoType==='nasdaq'){const d=_mtData['nasdaq'];if(d)bpSettle(bet.id,d.pct>=0?0:1);}
-  });
-}
-
-function bpOnNewImpact(){
-  if(!window._fbDb||!bpData.bets)return;
-  const todayKey=srTodayKey();
-  Object.values(bpData.bets).forEach(bet=>{
-    if(bet.settled||bet.status==='closed')return;
-    if(!bet.deadline||!bet.deadline.startsWith(todayKey))return;
-    if(bet.autoType==='newimpact'||bet.autoType==='firing') bpSettle(bet.id,0);
-  });
-}
-
-function bpSetTab(tab){
-  bpTab=tab;
-  const openBtn=document.getElementById('bp-tab-open');
-  const closedBtn=document.getElementById('bp-tab-closed');
-  if(openBtn){openBtn.style.borderBottomColor=tab==='open'?'var(--accent2)':'transparent';openBtn.style.color=tab==='open'?'var(--accent2)':'var(--dim)';}
-  if(closedBtn){closedBtn.style.borderBottomColor=tab==='closed'?'var(--accent)':'transparent';closedBtn.style.color=tab==='closed'?'var(--accent)':'var(--dim)';}
-  bpRender();
-}
-
-function bpRender(){
-  const list=document.getElementById('bp-list');
-  if(!list)return;
-  const myPts=bpData.users?.[bpUser]?.pts;
-  const ptsEl=document.getElementById('bp-my-pts');
-  if(ptsEl)ptsEl.textContent=bpUser?('💰 '+(myPts??'—')+'pt'):'💰 —pt';
-  const todayKeyBp=srTodayKey();
-  const allBets=Object.values(bpData.bets||{}).sort((a,b)=>b.createdAt-a.createdAt);
-  if(!allBets.length){list.innerHTML='<div style="font-family:var(--font-kr),sans-serif;font-size:12px;color:var(--dim);text-align:center;padding:20px;">베팅 없음</div>';bpRenderRanking();return;}
-  // 탭 기준으로 필터
-  const isOpen=b=>!b.settled&&b.status==='open';
-  const isClosed=b=>b.settled||b.status!=='open';
-  const bets=bpTab==='open'?allBets.filter(isOpen):allBets.filter(isClosed);
-  const nowLT=ltNow();
-  const renderBet=bet=>{
-    const pool=Object.fromEntries(Object.entries(bet.pool||{}).filter(([k])=>k!=='_'));
-    const totalAll=Object.values(pool).reduce((s,o)=>s+(o.total||0),0);
-    const myOptIdx=bpUser?Number(Object.keys(pool).find(i=>pool[i]?.bets?.[bpUser])??-1):-1;
-    let deadlineStr='';
-    let isExpired=bet.status!=='open';
-    if(bet.deadline&&!isExpired){
-      const dl=new Date(bet.deadline);
-      const diffMs=dl-nowLT;
-      if(diffMs<=0){isExpired=true;}
-      else{const dh=Math.floor(diffMs/3600000);const dm=Math.floor((diffMs%3600000)/60000);deadlineStr=dh>0?(dh+'h '+dm+'m 남음'):(dm+'m 남음');}
-    }
-    const statusBadge=bet.settled
-      ?'<span style="font-size:10px;padding:2px 7px;background:rgba(0,200,100,.15);border:1px solid rgba(0,200,100,.3);border-radius:3px;color:#00c864;">정산완료</span>'
-      :isExpired
-        ?'<span style="font-size:10px;padding:2px 7px;background:rgba(255,100,50,.1);border:1px solid rgba(255,100,50,.3);border-radius:3px;color:#ff6432;">마감</span>'
-        :'<span style="font-size:10px;padding:2px 7px;background:rgba(255,200,0,.1);border:1px solid rgba(255,200,0,.3);border-radius:3px;color:var(--gold);">베팅중</span>';
-    const optsHtml=bet.opts.map((opt,i)=>{
-      const optPool=pool[i]?.total||0;
-      const pct=totalAll>0?Math.round(optPool/totalAll*100):50;
-      const myAmt=pool[i]?.bets?.[bpUser]||0;
-      const isWinner=bet.settled&&bet.winner==i;
-      const isMyOpt=myOptIdx===i;
-      const barColor=i===0?'rgba(0,200,100,.5)':'rgba(68,153,255,.5)';
-      const canBet=bpUser&&!bet.settled&&!isExpired&&(myOptIdx===-1||myOptIdx===i);
-      const betInput=canBet?('<div style="display:flex;gap:4px;margin-top:5px;"><input type="number" id="amt-'+bet.id+'-'+i+'" min="10" max="9999" value="50" style="width:70px;padding:4px 6px;background:#0d1015;border:1px solid var(--border);border-radius:3px;color:var(--text);font-family:monospace;font-size:11px;"><button onclick="bpPlaceBet(\''+bet.id+'\','+i+',parseInt(document.getElementById(\'amt-'+bet.id+'-'+i+'\').value)||50)" style="padding:4px 10px;background:rgba(179,136,255,.15);border:1px solid var(--accent2);border-radius:3px;color:var(--accent2);font-family:\'Noto Sans KR\',sans-serif;font-size:11px;cursor:pointer;">'+(myAmt>0?'추가 베팅':'베팅')+'</button></div>'):'';
-      return '<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;"><span style="font-family:\'Noto Sans KR\',sans-serif;font-size:12px;color:'+(isWinner?'#00c864':isMyOpt?'var(--accent2)':'var(--text)')+';">'+(isWinner?'✅ ':'')+opt+(myAmt>0?(' <span style="color:var(--gold);font-size:10px;">('+myAmt+'pt)</span>'):'')+'</span><span style="font-family:monospace;font-size:11px;color:var(--dim);">'+pct+'% · '+optPool+'pt</span></div><div style="height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:3px;transition:width .4s;"></div></div>'+betInput+'</div>';
-    }).join('');
-    const adminSettleRow=bpIsAdmin?('<div style="display:flex;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);"><span style="font-family:\'Noto Sans KR\',sans-serif;font-size:10px;color:var(--dim);margin-right:4px;align-self:center;">'+(bet.settled?'':'정산:')+'</span>'+(bet.settled?'':bet.opts.map((opt,i)=>'<button onclick="bpSettle(\''+bet.id+'\','+i+')" style="flex:1;padding:4px;background:rgba(255,100,50,.1);border:1px solid rgba(255,100,50,.3);border-radius:3px;color:#ff6432;font-family:\'Noto Sans KR\',sans-serif;font-size:10px;cursor:pointer;">✅ '+opt+'</button>').join(''))+'<button onclick="bpDeleteBet(\''+bet.id+'\')" style="margin-left:auto;padding:4px 10px;background:rgba(80,80,80,.2);border:1px solid rgba(150,150,150,.3);border-radius:3px;color:#aaa;font-size:11px;cursor:pointer;">🗑 삭제</button></div>'):'';
-    const adminSettle=adminSettleRow;
-    return '<div style="background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:12px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;"><div style="font-family:\'Noto Sans KR\',sans-serif;font-size:12px;color:var(--text);font-weight:bold;line-height:1.4;flex:1;margin-right:8px;">'+bet.title+'</div>'+statusBadge+'</div><div style="font-family:monospace;font-size:10px;color:var(--dim);margin-bottom:8px;">총 풀: '+totalAll+'pt'+(deadlineStr?' · ⏱ '+deadlineStr:'')+(bet.deadline?' · 마감: '+bet.deadline.replace('T',' '):'')+' </div>'+optsHtml+adminSettle+'</div>';
-  };
-  // 탭별 렌더링
-  const emptyMsg=bpTab==='open'?'열린 베팅 없음':'끝난 베팅 없음';
-  list.innerHTML=bets.length?bets.map(renderBet).join(''):'<div style="font-family:var(--font-kr),sans-serif;font-size:12px;color:var(--dim);text-align:center;padding:20px;">'+emptyMsg+'</div>';
-  bpRenderRanking();
-  // 관리자 PW 초기화 버튼 목록
-  const resetList=document.getElementById('bp-pw-reset-list');
-  if(resetList&&bpIsAdmin){
-    resetList.innerHTML=BP_MEMBERS_WITH_PW.map(name=>{
-      const hasPw=bpData.users?.[name]?.pw;
-      const btnStyle='padding:3px 8px;border-radius:3px;font-size:10px;cursor:pointer;border:1px solid '+(hasPw?'rgba(255,100,50,.4)':'var(--border)')+';background:'+(hasPw?'rgba(255,100,50,.15)':'rgba(255,255,255,.05)')+';color:'+(hasPw?'#ff6432':'var(--dim)');
-      return '<button onclick="bpResetPw(this.dataset.name)" data-name="'+name+'" style="'+btnStyle+'">'+(hasPw?'🔒':'🔓')+' '+name+'</button>';
-    }).join('');
-  }
-  // 점수 초기화 버튼 목록
-  const ptsList=document.getElementById('bp-pts-reset-list');
-  if(ptsList&&bpIsAdmin){
-    const allNames=BP_MEMBERS;
-    ptsList.innerHTML=allNames.map(name=>{
-      const pts=bpData.users?.[name]?.pts;
-      const btnStyle='padding:3px 8px;border-radius:3px;font-size:10px;cursor:pointer;border:1px solid rgba(255,200,0,.3);background:rgba(255,200,0,.08);color:var(--gold)';
-      return '<button onclick="bpResetOnePts(this.dataset.name)" data-name="'+name+'" style="'+btnStyle+'">'+name+(pts!==undefined?' ('+pts+')':'')+'</button>';
-    }).join('');
-  }
-}
-
-function bpRenderRanking(){
-  const el=document.getElementById('bp-ranking');
-  if(!el)return;
-  const users=Object.entries(bpData.users||{}).filter(([name])=>BP_MEMBERS.includes(name)).sort((a,b)=>(b[1].pts||0)-(a[1].pts||0));
-  if(!users.length){el.innerHTML='<span style="color:var(--dim);">참가자 없음</span>';return;}
-  const medals=['🥇','🥈','🥉'];
-  el.innerHTML=users.slice(0,13).map(([name,data],i)=>'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);"><span style="color:'+(name===bpUser?'var(--accent2)':'var(--text)')+';">'+(medals[i]||(i+1)+'.')+' '+name+'</span><span style="font-family:monospace;color:var(--gold);">'+(data.pts||0)+'pt</span></div>').join('');
-}
-
-// ── 로그인: 비밀번호 있는 멤버는 PW 확인 ────────────
-function bpShowLogin(){
-  const opts=BP_MEMBERS.map(m=>'<option value="'+m+'">'+m+'</option>').join('');
-  showCustomModal({
-    icon:'👤',title:'// ROKBATT POLYMARKET 참가',
-    msg:'참가자를 선택하세요.<br><select id="bp-sel" style="margin-top:10px;width:100%;padding:8px;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:13px;"><option value="">— 선택 —</option>'+opts+'</select>',
-    okText:'다음',showCancel:true,borderColor:'var(--accent2)',okColor:'var(--accent2)',
-    onOk:()=>{
-      const sel=document.getElementById('bp-sel')?.value;
-      if(!sel)return;
-      if(!BP_MEMBERS_WITH_PW.includes(sel)){bpLoginFinalize(sel);return;}
-      if(!window._fbDb){bpLoginFinalize(sel);return;}
-      window._fbDb.ref(BP_FB+'/users/'+sel).once('value',snap=>{
-        const userData=snap.val();
-        if(!userData||!userData.pw){
-          // 미설정 → setTimeout으로 모달 닫힌 후 PW 설정 모달 열기
-          setTimeout(()=>{
-            showCustomModal({
-              icon:'🔑',title:'// 초기 비밀번호 설정',
-              msg:'<b style="color:var(--accent2);">'+sel+'</b>님의 초기 비밀번호를 설정하세요.<br><input type="password" id="bp-pw-set1" placeholder="비밀번호" style="margin-top:10px;width:100%;padding:8px;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:monospace;font-size:13px;box-sizing:border-box;"><br><input type="password" id="bp-pw-set2" placeholder="비밀번호 확인" style="margin-top:6px;width:100%;padding:8px;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:monospace;font-size:13px;box-sizing:border-box;">',
-              okText:'설정',showCancel:true,borderColor:'var(--accent2)',okColor:'var(--accent2)',
-              onOk:()=>{
-                const p1=document.getElementById('bp-pw-set1')?.value;
-                const p2=document.getElementById('bp-pw-set2')?.value;
-                if(!p1){setTimeout(()=>showCustomModal({icon:'⚠️',title:'// 오류',msg:'비밀번호를 입력하세요.',okText:'확인'}),50);return;}
-                if(p1!==p2){setTimeout(()=>showCustomModal({icon:'⚠️',title:'// 불일치',msg:'비밀번호가 일치하지 않습니다.',okText:'확인'}),50);return;}
-                if(!userData) window._fbDb.ref(BP_FB+'/users/'+sel).set({pts:500,granted:'',pw:p1});
-                else window._fbDb.ref(BP_FB+'/users/'+sel+'/pw').set(p1);
-                bpLoginFinalize(sel);
-              }
-            });
-          },50);
-        } else {
-          // PW 설정됨 → setTimeout으로 모달 닫힌 후 PW 입력 모달 열기
-          setTimeout(()=>{
-            showCustomModal({
-              icon:'🔒',title:'// 비밀번호 입력',
-              msg:'<b style="color:var(--accent2);">'+sel+'</b><br><input type="password" id="bp-pw-in" placeholder="비밀번호" style="margin-top:10px;width:100%;padding:8px;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:monospace;font-size:13px;box-sizing:border-box;" autocomplete="off">',
-              okText:'로그인',showCancel:true,borderColor:'var(--accent2)',okColor:'var(--accent2)',
-              onOk:()=>{
-                const pw=document.getElementById('bp-pw-in')?.value;
-                if(pw===userData.pw){bpLoginFinalize(sel);}
-                else{setTimeout(()=>showCustomModal({icon:'⛔',title:'// 오류',msg:'비밀번호가 틀렸습니다.',okText:'확인'}),50);}
-              }
-            });
-          },50);
-        }
-      });
-    }
-  });
-}
-
-function bpResetPw(name){
-  if(!bpIsAdmin)return;
-  showCustomModal({
-    icon:'🔑',title:'// PW 초기화',
-    msg:'<b style="color:var(--accent2);">'+name+'</b>의 비밀번호를 초기화하시겠습니까?<br><span style="font-size:11px;color:var(--dim);">다음 로그인 시 새 비밀번호를 설정하게 됩니다.</span>',
-    okText:'초기화',showCancel:true,borderColor:'var(--warn)',okColor:'var(--warn)',
-    onOk:()=>{
-      if(!window._fbDb)return;
-      window._fbDb.ref(BP_FB+'/users/'+name+'/pw').remove();
-      setTimeout(()=>showCustomModal({icon:'✅',title:'// 초기화 완료',msg:name+'의 비밀번호가 초기화되었습니다.',okText:'확인'}),50);
-    }
-  });
-}
-
-function bpResetOnePts(name){
-  if(!bpIsAdmin)return;
-  const cur=bpData.users?.[name]?.pts??0;
-  // 현재 오픈된 베팅에서 해당 참가자의 베팅 합계 계산
-  const activeBets=Object.values(bpData.bets||{}).filter(b=>!b.settled&&b.status==='open');
-  let refundTotal=0;
-  activeBets.forEach(bet=>{
-    Object.entries(bet.pool||{}).filter(([k])=>k!=='_').forEach(([,optData])=>{
-      if(optData.bets&&optData.bets[name]) refundTotal+=optData.bets[name];
-    });
-  });
-  const msg='<b style="color:var(--accent2);">'+name+'</b>의 점수를 500pt로 초기화합니다.'
-    +(refundTotal>0?'<br><span style="font-size:11px;color:var(--gold);">진행 중 베팅 '+refundTotal+'pt 철회 후 500pt 지급</span>':'<br><span style="font-size:11px;color:var(--dim);">현재: '+cur+'pt</span>');
-  showCustomModal({
-    icon:'💰',title:'// 점수 초기화',
-    msg,
-    okText:'초기화',showCancel:true,borderColor:'var(--warn)',okColor:'var(--warn)',
-    onOk:()=>{
-      if(!window._fbDb)return;
-      const updates={};
-      // 오픈된 베팅에서 해당 참가자 베팅 내역 제거 + 풀 차감
-      activeBets.forEach(bet=>{
-        Object.entries(bet.pool||{}).filter(([k])=>k!=='_').forEach(([optIdx,optData])=>{
-          if(optData.bets&&optData.bets[name]){
-            updates[BP_FB+'/bets/'+bet.id+'/pool/'+optIdx+'/total']=(optData.total||0)-optData.bets[name];
-            updates[BP_FB+'/bets/'+bet.id+'/pool/'+optIdx+'/bets/'+name]=null; // 삭제
-          }
-        });
-      });
-      // 점수 500pt로 리셋
-      updates[BP_FB+'/users/'+name+'/pts']=500;
-      updates[BP_FB+'/users/'+name+'/granted']='';
-      window._fbDb.ref().update(updates);
-      setTimeout(()=>showCustomModal({icon:'✅',title:'// 완료',msg:name+'의 베팅이 철회되고 500pt로 초기화되었습니다.',okText:'확인'}),50);
-    }
-  });
-}
-
-function bpResetAllPts(){
-  if(!bpIsAdmin)return;
-  showCustomModal({
-    icon:'⚠️',title:'// 전체 점수 초기화',
-    msg:'<b style="color:#ff3355;">모든 참가자</b>의 점수를 500pt로 초기화합니다.<br><span style="font-size:11px;color:var(--dim);">진행 중 베팅은 전부 철회됩니다. 되돌릴 수 없습니다.</span>',
-    okText:'전체 초기화',showCancel:true,borderColor:'#ff3355',okColor:'#ff3355',
-    onOk:()=>{
-      if(!window._fbDb)return;
-      const updates={};
-      const activeBets=Object.values(bpData.bets||{}).filter(b=>!b.settled&&b.status==='open');
-      // 모든 오픈 베팅의 pool 전체 초기화
-      activeBets.forEach(bet=>{
-        Object.entries(bet.pool||{}).filter(([k])=>k!=='_').forEach(([optIdx,optData])=>{
-          updates[BP_FB+'/bets/'+bet.id+'/pool/'+optIdx+'/total']=0;
-          updates[BP_FB+'/bets/'+bet.id+'/pool/'+optIdx+'/bets']=null;
-        });
-      });
-      // 전원 점수 500pt 리셋
-      BP_MEMBERS.forEach(name=>{
-        updates[BP_FB+'/users/'+name+'/pts']=500;
-        updates[BP_FB+'/users/'+name+'/granted']='';
-      });
-      window._fbDb.ref().update(updates);
-      setTimeout(()=>showCustomModal({icon:'✅',title:'// 완료',msg:'전체 베팅이 철회되고 500pt로 초기화되었습니다.',okText:'확인'}),50);
-    }
-  });
-}
-
-function bpLoginFinalize(sel){
-  bpUser=sel;bpIsAdmin=false;
-  localStorage.setItem('bp_session',JSON.stringify({user:sel,admin:false}));
-  bpUpdateUserBar();
-  if(window._fbDb&&BP_MEMBERS.includes(sel)){
-    window._fbDb.ref(BP_FB+'/users/'+sel).once('value',snap=>{
-      if(!snap.val()) window._fbDb.ref(BP_FB+'/users/'+sel).set({pts:500,granted:''});
-      bpDailyGrant();bpRender();
-    });
-  }
-}
-
-function bpAdminLogin(){
-  showCustomModal({
-    icon:'⚙️',title:'// ADMIN 로그인',
-    msg:'관리자 비밀번호<br><input type="password" id="bp-admin-pw" style="margin-top:10px;width:100%;padding:8px;background:#0d1015;border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:monospace;font-size:13px;" autocomplete="off">',
-    okText:'확인',showCancel:true,
-    onOk:()=>{
-      const pw=document.getElementById('bp-admin-pw')?.value;
-      if(!pw)return;
-      // Firebase에서 관리자 PW 조회 후 비교
-      if(!window._fbDb){showCustomModal({icon:'⚠️',title:'// 오류',msg:'Firebase 연결 필요',okText:'확인'});return;}
-      window._fbDb.ref(BP_FB+'/admin/pw').once('value',snap=>{
-        const storedPw=snap.val();
-        if(!storedPw){
-          // 최초 1회: PW 미설정 상태 → 설정 안내
-          setTimeout(()=>showCustomModal({icon:'⚠️',title:'// PW 미설정',msg:'Firebase 콘솔에서<br><b>gosangpa/bunkerpool/admin/pw</b>에<br>관리자 비밀번호를 직접 설정해주세요.',okText:'확인'}),50);
-          return;
-        }
-        if(pw===storedPw){
-          bpIsAdmin=true;
-          if(!bpUser)bpUser='[ADMIN]';
-          localStorage.setItem('bp_session',JSON.stringify({user:bpUser,admin:true}));
-          bpUpdateUserBar();
-          document.getElementById('bp-admin-panel').style.display='block';
-          if(window._fbDb){
-            window._fbDb.ref(BP_FB+'/users/관리자').remove();
-            window._fbDb.ref(BP_FB+'/users/[ADMIN]').remove();
-          }
-          bpRender();
-          if(bpData&&Object.keys(bpData.bets||{}).length>=0) bpEnsureDefaultBets();
-          setTimeout(()=>showCustomModal({icon:'✅',title:'// ADMIN',msg:'관리자 모드 활성화',okText:'확인'}),50);
-        } else {
-          setTimeout(()=>showCustomModal({icon:'⛔',title:'// 오류',msg:'비밀번호가 틀렸습니다.',okText:'확인'}),50);
-        }
-      });
-    }
-  });
-}
-
-function bpLogout(){
-  bpUser=null;bpIsAdmin=false;
-  localStorage.removeItem('bp_session');
-  bpUpdateUserBar();
-  const ap=document.getElementById('bp-admin-panel');
-  if(ap)ap.style.display='none';
-  bpRender();
-}
-
-function bpUpdateUserBar(){
-  const bar=document.getElementById('bp-user-bar');
-  const loginBtn=document.getElementById('bp-login-btn');
-  const nameEl=document.getElementById('bp-username-display');
-  if(bpUser){
-    if(bar)bar.style.display='block';
-    if(loginBtn)loginBtn.style.display='none';
-    if(nameEl)nameEl.textContent=bpUser+(bpIsAdmin?' [ADMIN]':'');
-  } else {
-    if(bar)bar.style.display='none';
-    if(loginBtn)loginBtn.style.display='';
-    const ap=document.getElementById('bp-admin-panel');
-    if(ap)ap.style.display='none';
-  }
-}
-
-function bpAdminCreate(){
-  if(!bpIsAdmin)return;
-  const title=document.getElementById('bp-new-title')?.value.trim();
-  const opt1=document.getElementById('bp-new-opt1')?.value.trim();
-  const opt2=document.getElementById('bp-new-opt2')?.value.trim();
-  const deadline=document.getElementById('bp-new-deadline')?.value||srTodayKey()+'T23:59';
-  const autoType=document.getElementById('bp-new-auto')?.value||'manual';
-  if(!title||!opt1||!opt2){showCustomModal({icon:'⚠️',title:'// 입력 오류',msg:'제목과 선택지를 모두 입력하세요.',okText:'확인'});return;}
-  bpCreateBet({title,opts:[opt1,opt2],deadline,autoType});
-  document.getElementById('bp-new-title').value='';
-  document.getElementById('bp-new-opt1').value='';
-  document.getElementById('bp-new-opt2').value='';
-  showCustomModal({icon:'✅',title:'// 개설 완료',msg:'"'+title+'" 베팅이 개설되었습니다.',okText:'확인'});
-}
-
-
-// ── 식단표 줌 모달 ────────────────────────────────────
-function openMealZoom(src){
-  const ov=document.getElementById('meal-zoom-overlay');
-  const img=document.getElementById('meal-zoom-img');
-  if(ov&&img){img.src=src;ov.style.display='flex';}
-}
-function closeMealZoom(){
-  const ov=document.getElementById('meal-zoom-overlay');
-  if(ov)ov.style.display='none';
-}
+// ═══════════════════════════════════════════════════════
+// ─── 마켓 티커 (하단 고정 실시간 시세) ──────────────────
+// ═══════════════════════════════════════════════════════
 
 const MARKET_ITEMS = [
   // 환율 (open.er-api.com)
@@ -6808,17 +6187,6 @@ async function mtRefresh(){
   await Promise.all([mtFetchFX(), mtFetchCoins(), mtFetchYahoo()]);
   mtRender();
 }
-
-async function initMarketTicker(){
-  const track = document.getElementById('market-ticker-track');
-  if(track) track.innerHTML = '<span class="mt-loading">📡 시세 불러오는 중...</span>';
-  await Promise.all([mtFetchFX(), mtFetchCoins(), mtFetchYahoo()]);
-  mtRender();
-  requestAnimationFrame(mtAnimate);
-  // 2분마다 데이터 갱신
-  setInterval(mtRefresh, 120000);
-}
-
 
 async function initMarketTicker(){
   const track = document.getElementById('market-ticker-track');
